@@ -485,7 +485,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-        LoadingVideo.setText("Failed to load the video");
+        LoadingVideo.setText("Failed to load the video "+ i );
     }
 
     @Override
