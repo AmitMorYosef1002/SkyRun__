@@ -534,6 +534,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
     //----- my new Class for my obj ------------
     public class MyView extends SurfaceView implements Runnable{
         // usefull vars
+        //uuuuuuuu
         Thread t = null;
         Canvas canvas=null;
         SurfaceHolder holder;
@@ -560,6 +561,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                     // sent to more chance that brack the best score and when back here show the crown. //
                     c.setBackgroundResource(R.drawable.b);
                     c.setVisibility(View.VISIBLE);
+
 
                 }
 
