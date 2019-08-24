@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     public boolean audio = true,vibration = true;
     private static final String TAG = "MainActivity";
     ConstraintLayout layout;
-    ConstraintLayout layout1,layout2;
+    ConstraintLayout layout1,layout2,layout3;
     String lang = "";
     private EditText editTextEmail;
     private EditText editTextSubject;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     GoogleSignInAccount mGoogleSignInAccount;
     ArrayList<String> a;
     SharedPreferences prefs;
+    ImageButton soundPic,vibrationPic,musicPic;
     //Send button
     private Button buttonSend;
 
@@ -103,12 +105,16 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             layout = findViewById(R.id.main_layout);
             layout1 = findViewById(R.id.main_layout1);
             layout2 = findViewById(R.id.main_layout2);
+            layout3 = findViewById(R.id.main_layout3);
             //-------------- Email --------------
             //Initializing the views
             editTextEmail = (EditText) findViewById(R.id.editTextEmail);
             editTextSubject = (EditText) findViewById(R.id.editTextSubject);
             editTextMessage = (EditText) findViewById(R.id.editTextMessage);
             buttonSend = (Button) findViewById(R.id.buttonSend);
+            soundPic =(ImageButton) findViewById(R.id.sound);
+            musicPic =(ImageButton) findViewById(R.id.music);
+            vibrationPic =(ImageButton) findViewById(R.id.vibration);
             //Adding click listener
             buttonSend.setOnClickListener((View.OnClickListener) this);
             editTextEmail.setText("");
@@ -117,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             layout.setVisibility(View.VISIBLE);
             layout1.setVisibility(View.GONE);
             layout2.setVisibility(View.GONE);
+            layout3.setVisibility(View.GONE);
+
             StopOpenGame();
             a = new ArrayList<>();
             prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
@@ -300,7 +308,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     }
 
     public void GoToSettings(View view) {
-        openDilaog();
+        layout3.setVisibility(View.VISIBLE);
+        layout.setVisibility(View.GONE);
     }
 
     public void openDilaog(){
@@ -372,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         }
 
     public void GoToTutorial(View view) {
+
         layout.animate()
                 .translationY(layout.getHeight())
                 .setDuration(500)
@@ -385,7 +395,22 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 });
     }
 
+    public void sound(View view) {
+        SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        audio=prefs.getBoolean("audio", true);
+        if (audio)
+            soundPic.setBackgroundResource(R.drawable.sounddark);
 
+
+}
+
+    public void vibration(View view) {
+        vibrationPic.setBackgroundResource(R.drawable.vibrationdark);
+    }
+
+    public void music(View view) {
+        musicPic.setBackgroundResource(R.drawable.musicdark);
+    }
 
 
 // ----------------------
