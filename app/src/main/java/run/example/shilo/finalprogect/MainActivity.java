@@ -124,7 +124,18 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             layout1.setVisibility(View.GONE);
             layout2.setVisibility(View.GONE);
             layout3.setVisibility(View.GONE);
+            SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+            vibration=prefs.getBoolean("vibration", true);
+            if(vibration)
+                vibrationPic.setBackgroundResource(R.drawable.vibration1);
+            else
+                vibrationPic.setBackgroundResource(R.drawable.vibrationdark);
 
+            audio=prefs.getBoolean("vibration", true);
+            if(audio)
+                soundPic.setBackgroundResource(R.drawable.sound);
+            else
+                soundPic.setBackgroundResource(R.drawable.sounddark);
             StopOpenGame();
             a = new ArrayList<>();
             prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
@@ -398,14 +409,37 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     public void sound(View view) {
         SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
         audio=prefs.getBoolean("audio", true);
-        if (audio)
+        if (audio) {
             soundPic.setBackgroundResource(R.drawable.sounddark);
-
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("audio", !audio);
+            editor.commit();
+        }
+        else{
+            soundPic.setBackgroundResource(R.drawable.sound);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("audio", !audio);
+            editor.commit();
+        }
 
 }
 
     public void vibration(View view) {
-        vibrationPic.setBackgroundResource(R.drawable.vibrationdark);
+        SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        vibration=prefs.getBoolean("vibration", true);
+        if (vibration) {
+            vibrationPic.setBackgroundResource(R.drawable.vibrationdark);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("vibration", !vibration);
+            editor.commit();
+        }
+        else{
+            vibrationPic.setBackgroundResource(R.drawable.vibration1);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("vibration", !vibration);
+            editor.commit();
+        }
+
     }
 
     public void music(View view) {

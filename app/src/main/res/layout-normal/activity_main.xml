@@ -171,7 +171,6 @@
         android:id="@+id/main_layout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/skyback12"
         android:orientation="vertical"
         android:paddingTop="20dp"
         android:visibility="gone"
@@ -295,7 +294,6 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:visibility="gone"
-        android:background="@drawable/b"
         tools:context=".MainActivity"
         android:animateLayoutChanges="true"
         >
