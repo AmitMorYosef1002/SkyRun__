@@ -82,7 +82,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
     AnimationDrawable startAnimation;
     ImageButton startPic;
     ImageView crown,crown1;
-    TextView PlayerScore,PlayerBestScore,explain,LoadingVideo,kind;
+    TextView PlayerScore,PlayerBestScore,explain,LoadingVideo,kind,reviveForVid;
     private RewardedVideoAd mRewardedVideoAd;
 
     @Override
@@ -219,6 +219,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
         //mAdView.loadAd(adRequest);
         explain=(TextView) findViewById(R.id.textView);
         LoadingVideo=(TextView) findViewById(R.id.textView1);
+        reviveForVid=(TextView) findViewById(R.id.textView);
         crown=(ImageView) findViewById(R.id.crown);
         crown1=(ImageView) findViewById(R.id.crown1);
         kind = (TextView) findViewById(R.id.kind);
@@ -241,6 +242,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
         startPic.setVisibility(View.GONE);
         crown.setVisibility(View.GONE);
         crown1.setVisibility(View.GONE);
+        reviveForVid.setVisibility(View.INVISIBLE);
         SaveTheBestScores();
         try{
         if (ComeFrome.equals("MoreChane") && getIntent().getStringArrayListExtra("kind").get(4) != null){
@@ -450,6 +452,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
         if (!alreadyRevive) {
             startPic.setVisibility(View.VISIBLE);
             LoadingVideo.setVisibility(View.GONE);
+            reviveForVid.setVisibility(View.VISIBLE);
         }
     }
 
@@ -534,7 +537,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
     //----- my new Class for my obj ------------
     public class MyView extends SurfaceView implements Runnable{
         // usefull vars
-        //uuuuuuuu
+        //upd
         Thread t = null;
         Canvas canvas=null;
         SurfaceHolder holder;
@@ -848,7 +851,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                 boolean disqualification = false, getFeature = false;
                 for (int i = 0; i < stones.size(); i++) {
                     int middle = stones.get(i).getX() + golemstone1.getWidth() / 2;
-                    if (stones.get(i).getY() + stones.get(i).getHeght() - 10 >= (sprite.getY() + 10) && middle > sprite.getX() && middle < sprite.getX() + sprite.wight) {
+                    if (stones.get(i).getY() + stones.get(i).getHeght()-10 >= (sprite.getY() ) && middle > sprite.getX() && middle < sprite.getX() + sprite.wight) {
                         if (stones.get(i).TAG.equals("Stone") && !show_disqualification) {
                             disqualification = true;
                             if (MakeAudio)
@@ -873,9 +876,6 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                 if (current_health > 0){
                     show_disqualification = true;
                     current_health -=1;
-                    if (level > 3){
-
-                    }
                 }
                 else {
 

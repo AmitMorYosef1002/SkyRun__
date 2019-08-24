@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:context=".MainActivity"
         android:animateLayoutChanges="true"
         >
@@ -296,7 +296,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:context=".MainActivity"
         android:animateLayoutChanges="true"
         >
@@ -352,6 +352,68 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main_layout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:background="@drawable/b"
+        android:visibility="visible"
+        tools:context=".MainActivity"
+        android:animateLayoutChanges="true"
+        >
+
+        <ImageButton
+            android:id="@+id/music"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="60dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/music"
+            android:onClick="BackToMain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/sound"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="228dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/sound"
+            android:onClick="BackToMain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.524"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/vibration"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="400dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/vibration1"
+            android:onClick="BackToMain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.527"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
