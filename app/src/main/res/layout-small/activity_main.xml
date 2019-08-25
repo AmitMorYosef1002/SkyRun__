@@ -381,8 +381,8 @@
 
         <ImageButton
             android:id="@+id/music"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="60dp"
@@ -398,8 +398,8 @@
 
         <ImageButton
             android:id="@+id/sound"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/sound"
@@ -413,8 +413,8 @@
 
         <ImageButton
             android:id="@+id/vibration"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/vibration1"

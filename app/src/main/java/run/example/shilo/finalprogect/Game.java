@@ -50,7 +50,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
     boolean BigRoad = true;
     int max_health = 4, current_health = 3,turns = 0,level = 0,Moving = 600,Xresume = -999,SaveScore = 0;
     int Score = 0,LastPlce = -100,TimeToStart = 0,NumToShow = 3;
-    MediaPlayer passRoad ,Levelup,getfeatures,hit;
+    MediaPlayer passRoad ,Levelup,getfeatures,hit,gameMusic;
     Intent g,BackToMain;
     DisplayMetrics dm;
     String GameKind,ComeFrome;
@@ -148,6 +148,8 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
         passRoad = MediaPlayer.create(this, R.raw.passroad1);
         Levelup = MediaPlayer.create(this, R.raw.levelup1);
         hit = MediaPlayer.create(this, R.raw.hit);
+        gameMusic =MediaPlayer.create(this,R.raw.gmusic);
+
         //
 
         //Bitmap
@@ -211,6 +213,11 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
             level = getIntent().getIntExtra("level", 0);
             current_health = 0;
             alreadyRevive = true;
+        }
+        SharedPreferences prefs1 = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        if ( prefs1.getBoolean("music",true)==true &&!( ComeFrome.equals("MoreChane")) ) {
+            gameMusic.setLooping(true);
+            gameMusic.start();
         }
         getSettingsData();
         // -----------------------------------------
@@ -404,6 +411,8 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                 editor.commit();
             }
         }
+        gameMusic.stop();
+        gameMusic.release();
         startActivity(BackToMain);
     }
 
@@ -479,6 +488,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
         current_health = 0;
         stones = new ArrayList<>();
         v.run();
+
     }
 
     @Override
@@ -567,6 +577,11 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
 
 
                 }
+                SharedPreferences prefs1 = getContext().getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+                if ( prefs1.getBoolean("music",true)==true&& ComeFrome.equals("Ad")) {
+                    gameMusic.setLooping(true);
+                    gameMusic.start();
+            }
 
                 while (isItOk) {
 
@@ -885,7 +900,10 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                         g.putExtra("kind", GameKind);
                         g.putExtra("Score", Score);
                         g.putExtra("level", level);
+                        gameMusic.stop();
+
                         startActivity(g);
+
                     }
                     else{
                         SaveTheBestScores();
@@ -893,6 +911,8 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                         g.putExtra("Score", Score);
                         g.putExtra("level", level);
                         g.putExtra("AlreadyRevive","true");
+                        gameMusic.stop();
+
                         startActivity(g);
                     }
 

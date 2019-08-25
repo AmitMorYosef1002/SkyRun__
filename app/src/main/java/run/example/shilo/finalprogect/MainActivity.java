@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     Intent go;
     TextView Title,bestScore,ContactTitel,Tutorial;
     SettingsDialog exampleDialog;
-    public boolean audio = true,vibration = true;
+    public boolean audio = true,vibration = true, music=true;
     private static final String TAG = "MainActivity";
     ConstraintLayout layout;
     ConstraintLayout layout1,layout2,layout3;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             musicPic =(ImageButton) findViewById(R.id.music);
             vibrationPic =(ImageButton) findViewById(R.id.vibration);
             //Adding click listener
+
             buttonSend.setOnClickListener((View.OnClickListener) this);
             editTextEmail.setText("");
             editTextMessage.setText("");
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             layout1.setVisibility(View.GONE);
             layout2.setVisibility(View.GONE);
             layout3.setVisibility(View.GONE);
-            SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+            prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
             vibration=prefs.getBoolean("vibration", true);
             if(vibration)
                 vibrationPic.setBackgroundResource(R.drawable.vibration1);
@@ -136,9 +138,14 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 soundPic.setBackgroundResource(R.drawable.sound);
             else
                 soundPic.setBackgroundResource(R.drawable.sounddark);
+            music = prefs.getBoolean("music",true);
+            if(music)
+                musicPic.setBackgroundResource(R.drawable.music);
+            else
+                musicPic.setBackgroundResource(R.drawable.musicdark);
             StopOpenGame();
             a = new ArrayList<>();
-            prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+
             /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build();
@@ -443,7 +450,20 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
     }
 
     public void music(View view) {
-        musicPic.setBackgroundResource(R.drawable.musicdark);
+        SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        music=prefs.getBoolean("music", true);
+        if (music) {
+            musicPic.setBackgroundResource(R.drawable.musicdark);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("music", !music);
+            editor.commit();
+        }
+        else{
+            musicPic.setBackgroundResource(R.drawable.music);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("music", !music);
+            editor.commit();
+        }
     }
 
 
