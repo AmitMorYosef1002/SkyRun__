@@ -260,7 +260,24 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
             //--------------------
 
     }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        SharedPreferences prefs1 = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        if ( prefs1.getBoolean("music",true)==true &&!( ComeFrome.equals("MoreChane")) ) {
+            gameMusic= MediaPlayer.create(this,R.raw.gmusic);
+            gameMusic.setLooping(true);
+            gameMusic.start();
+        }
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (gameMusic.isPlaying()) {
+            gameMusic.stop();
+        }
+    }
     public void SaveTheBestScores(){
         SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
         String score = "0";
@@ -577,10 +594,15 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
 
 
                 }
-                SharedPreferences prefs1 = getContext().getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
-                if ( prefs1.getBoolean("music",true)==true&& ComeFrome.equals("Ad")) {
-                    gameMusic.setLooping(true);
-                    gameMusic.start();
+                if (isItOk)
+                {
+                    try {
+                        SharedPreferences prefs1 = getContext().getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+                        if (prefs1.getBoolean("music", true) == true && ComeFrome.equals("Ad")) {
+                            gameMusic.setLooping(true);
+                            gameMusic.start();
+                        }
+                    }catch (Exception e){}
             }
 
                 while (isItOk) {
@@ -617,6 +639,9 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                         // Make it stop came here
                         SpriteCreated = true;
                     }
+                    sprite.OnTheGame = false;
+                    if (ComeFrome.equals("main")||ComeFrome.equals("Ad"))
+                        sprite.OnTheGame = true;
                     if (sprite.HomeButtonPushed.equals("pause"))
                         pause();
                     if (StartGame) {
@@ -800,8 +825,12 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
 
                     if (!invisibilty[StartTurns])
                         sprite.onDraw(canvas, level);
-                    else
+                    else {
+                        if (sprite.currentSlowBitmap%2 == 0){
+                            sprite.currentBitmap--;
+                        }
                         sprite.update(canvas);
+                    }
                     InvisibilityTurns -= 1;
                     if (InvisibilityTurns == 0) {
                         StartTurns += 1;

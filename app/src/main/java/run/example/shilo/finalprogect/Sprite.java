@@ -5,17 +5,19 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 import android.util.TimeUtils;
+import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.View;
 public class Sprite implements View.OnTouchListener {
     int x, y, xSpeed, InitialLoc,wight,hight ,ySpeed,level,resumeWight,resumeHight,ScreenHeight,widthScreen;
+    public boolean OnTheGame = true;
     public int Xresume;
     public boolean GameStop = false;
     Bitmap [] playerpositions;
     Canvas c;
     double time;
     Game.MyView ov;
-    int currentBitmap = 0,currentSlowBitmap = 0;
+    public int currentBitmap = 0,currentSlowBitmap = 0;
     public boolean MoveThePlayer = false,BigRoad = true;
     String HomeButtonPushed="resume";
 
@@ -91,17 +93,18 @@ public class Sprite implements View.OnTouchListener {
     public int getheght(){return hight;}
     // check where the touch was (left/right)
     public void ResumPause(){
-        if (HomeButtonPushed.equals("resume")) {
-            HomeButtonPushed = "pause";
-            ov.pause();
-            Canvas c = ov.holder.lockCanvas();
-            ov.onDraw1(c);
-            ov.holder.unlockCanvasAndPost(c);
-            ov.Dialog();
-        }
-        else {
-            HomeButtonPushed = "resume";
-            ov.resume();
+        if (OnTheGame) {
+            if (HomeButtonPushed.equals("resume")) {
+                HomeButtonPushed = "pause";
+                ov.pause();
+                Canvas c = ov.holder.lockCanvas();
+                ov.onDraw1(c);
+                ov.holder.unlockCanvasAndPost(c);
+                ov.Dialog();
+            } else {
+                HomeButtonPushed = "resume";
+                ov.resume();
+            }
         }
     }
     public void WhereTheTuoch(MotionEvent me) {
