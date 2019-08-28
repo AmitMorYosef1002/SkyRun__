@@ -45,7 +45,7 @@ import static java.lang.Integer.parseInt;
 
 public class Game extends AppCompatActivity implements ExampleDialog.ExampleDialogListener, RewardedVideoAdListener {
 
-    boolean StopEnemies = false,MakeAudio = false,MakeVibration = false,PlayedAlredy = false,StartGame = false,b = false,alreadyRevive=false,combackToLife=false;
+    boolean StopEnemies = false,MakeAudio = false,MakeVibration = false,PlayedAlredy = false,StartGame = false,b = false,alreadyRevive=false,combackToLife=false,pressHome=false;
     private static final String TAG = "Game";
     boolean BigRoad = true;
     int max_health = 4, current_health = 3,turns = 0,level = 0,Moving = 600,Xresume = -999,SaveScore = 0;
@@ -256,9 +256,30 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
             LoadingVideo.setVisibility(View.GONE);
             explain.setVisibility(View.GONE);
             alreadyRevive = true;
-        }}catch (Exception e){}
-            //--------------------
+        }}catch (Exception e){
 
+        }
+
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        SharedPreferences prefs1 = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        if ( prefs1.getBoolean("music",true)==true &&!( ComeFrome.equals("MoreChane")) ) {
+            gameMusic= MediaPlayer.create(this,R.raw.gmusic);
+            gameMusic.setLooping(true);
+            gameMusic.start();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (gameMusic.isPlaying()) {
+            gameMusic.stop();
+        }
     }
     @Override
     protected void onRestart() {
@@ -428,8 +449,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
                 editor.commit();
             }
         }
-        gameMusic.stop();
-        gameMusic.release();
+
         startActivity(BackToMain);
     }
 

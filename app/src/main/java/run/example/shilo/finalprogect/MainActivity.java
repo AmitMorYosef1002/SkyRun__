@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
                 musicPic.setBackgroundResource(R.drawable.musicdark);
             StopOpenGame();
             a = new ArrayList<>();
+
             /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build();

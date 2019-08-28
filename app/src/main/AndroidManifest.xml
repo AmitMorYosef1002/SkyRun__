@@ -15,13 +15,15 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MoreChance"></activity>
+        android:theme="@style/AppTheme"
+        >
+
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-9142758453140162~8087689106" />
 
+        <activity android:name=".MoreChance"></activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"></activity>
