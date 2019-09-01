@@ -23,6 +23,7 @@
         >
 
         <ImageButton
+            android:layout_marginTop="10dp"
             android:id="@+id/searchImageButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
