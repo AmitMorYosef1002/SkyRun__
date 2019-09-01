@@ -15,8 +15,8 @@ public class Health {
             this.x += 2;
         this.y = 5;
     }//sprite
-public void onDraw(Canvas canvas){
-    canvas.drawBitmap(heart,x,y,null);
-}// onDraw
+    public void onDraw(Canvas canvas){
+        canvas.drawBitmap(heart,x,y,null);
+    }// onDraw
 
 }
