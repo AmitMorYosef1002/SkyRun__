@@ -263,24 +263,7 @@ public class Game extends AppCompatActivity implements ExampleDialog.ExampleDial
 
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        SharedPreferences prefs1 = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
-        if ( prefs1.getBoolean("music",true)==true &&!( ComeFrome.equals("MoreChane")) ) {
-            gameMusic= MediaPlayer.create(this,R.raw.gmusic);
-            gameMusic.setLooping(true);
-            gameMusic.start();
-        }
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (gameMusic.isPlaying()) {
-            gameMusic.stop();
-        }
-    }
     @Override
     protected void onRestart() {
         super.onRestart();

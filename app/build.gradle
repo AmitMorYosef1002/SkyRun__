@@ -6,8 +6,8 @@ android {
         applicationId "run.example.shilo.finalprogect"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 13
-        versionName "2.0"
+        versionCode 14
+        versionName '2.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -15,6 +15,8 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 

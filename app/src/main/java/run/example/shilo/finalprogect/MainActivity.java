@@ -29,10 +29,12 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.LeaderboardsClient;
@@ -42,13 +44,13 @@ import java.util.regex.Pattern;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-public class MainActivity extends AppCompatActivity implements SettingsDialog.ExampleDialogListener,View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private AdView mAdView,mAdView1,mAdView2;
     AnimationDrawable man;
     ImageView man_image;
     Intent go;
+    int RC_SIGN_IN=0;
     TextView Title,bestScore,ContactTitel,Tutorial;
-    SettingsDialog exampleDialog;
     public boolean audio = true,vibration = true, music=true;
     private static final String TAG = "MainActivity";
     ConstraintLayout layout;
@@ -153,18 +155,43 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             signIn();
             Log.d("ddd",""+mLeaderboardsClient);*/
 
-
+        startSignInIntent();
 
 
 
     }
 
+    private void startSignInIntent() {
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        Intent intent = signInClient.getSignInIntent();
+        startActivityForResult(intent, RC_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // The signed in account is stored in the result.
+                GoogleSignInAccount signedInAccount = result.getSignInAccount();
+            } else {
+                String message = result.getStatus().getStatusMessage();
+                if (message == null || message.isEmpty()) {
+
+                }
+                new AlertDialog.Builder(this).setMessage(message)
+                        .setNeutralButton(android.R.string.ok, null).show();
+            }
+        }
+    }
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 7);
     }
 
-    @Override
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -175,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
-    }
+    }*/
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
@@ -330,21 +357,6 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Ex
         layout.setVisibility(View.GONE);
     }
 
-    public void openDilaog(){
-        exampleDialog = new SettingsDialog();
-        exampleDialog.show(getSupportFragmentManager(), "example dialog");
-
-    }
-
-    @Override
-    public void applyTexts(boolean audio, boolean vibration) {
-        SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("audio", audio);
-        editor.commit();
-        editor.putBoolean("vibration", vibration);
-        editor.commit();
-    }
 
     public void GoToEmail(View view) {
         //layout.setVisibility(View.GONE);

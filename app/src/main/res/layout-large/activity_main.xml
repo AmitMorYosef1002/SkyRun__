@@ -31,7 +31,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/settings2"
-            android:layout_marginTop="10dp"
             android:onClick="GoToSettings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.991"
