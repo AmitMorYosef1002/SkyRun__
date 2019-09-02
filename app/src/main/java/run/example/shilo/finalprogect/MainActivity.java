@@ -186,10 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, 7);
-    }
 
     /*@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
