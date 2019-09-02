@@ -6,7 +6,7 @@ android {
         applicationId "run.example.shilo.finalprogect"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 14
+        versionCode 15
         versionName '2.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
