@@ -6,4 +6,5 @@
     <string name="language">Language</string>
     <string name="english">English</string>
     <string name="hebrew">hebrew</string>
+    <string name="appId" translatable="false">140014029949</string>
 </resources>

@@ -1,5 +1,9 @@
 package run.example.shilo.finalprogect;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
@@ -35,16 +39,29 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.LeaderboardsClient;
+import com.google.android.gms.games.Player;
+import com.google.android.gms.games.leaderboard.Leaderboard;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
+    private static final int RC_LEADERBOARD_UI = 9004;
     private AdView mAdView,mAdView1,mAdView2;
     AnimationDrawable man;
     ImageView man_image;
@@ -63,12 +80,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LeaderboardsClient mLeaderboardsClient;
     GoogleSignInClient mGoogleSignInClient;
     GoogleSignInAccount mGoogleSignInAccount;
+    GoogleApiClient mGoogleApiClient;
     ArrayList<String> a;
     SharedPreferences prefs;
     ImageButton soundPic,vibrationPic,musicPic;
     //Send button
     private Button buttonSend;
-
+    GoogleSignInOptions gso;
+    private AchievementsClient mAchievementsClient;
+    SignInButton signInButton = findViewById(R.id.sign_in_button);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -119,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             musicPic =(ImageButton) findViewById(R.id.music);
             vibrationPic =(ImageButton) findViewById(R.id.vibration);
             //Adding click listener
-
+            signInButton = findViewById(R.id.sign_in_button);
             buttonSend.setOnClickListener((View.OnClickListener) this);
             editTextEmail.setText("");
             editTextMessage.setText("");
@@ -155,19 +175,103 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             signIn();
             Log.d("ddd",""+mLeaderboardsClient);*/
 
-        startSignInIntent();
+        //startSignInIntent();
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();*/
+        //Scope s = new Scope("708959726924-mkep207e6fmvrmbajr6mn571r7amo40j.apps.googleusercontent.com");
+        /*gso = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        // Set the dimensions of the sign-in button.
 
-
-
+        signInButton.setSize(SignInButton.SIZE_STANDARD);*/
+        //----------------------------------------------------------
+        // Create the client used to sign in to Google services.
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+     //           .requestIdToken("708959726924-8gn4iafqkekg6c2aivfd7833a2n3qc5p.apps.googleusercontent.com")
+                .requestScopes(Games.SCOPE_GAMES_LITE)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        //startSignInIntent();
+        signIn();
+        //----------------------------------------------------------
+        //signIn();
+        /*mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .addApi(Games.API)
+                .addScope(Games.SCOPE_GAMES)
+                .setViewForPopups(findViewById(android.R.id.content)).useDefaultAccount()
+                .build();
+        mGoogleApiClient.connect();*/
+        //connect_to_leader();
+        //Log.e("e","signInResult:sussed code= "+mGoogleApiClient.isConnected());
     }
 
-    private void startSignInIntent() {
-        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
-                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
-        Intent intent = signInClient.getSignInIntent();
-        startActivityForResult(intent, RC_SIGN_IN);
+    private void showLeaderboard() {
+        Games.getLeaderboardsClient(this, GoogleSignIn.getLastSignedInAccount(this))
+                .getLeaderboardIntent("CgkIzNqritEUEAIQAQ")
+                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                    @Override
+                    public void onSuccess(Intent intent) {
+                        startActivityForResult(intent, RC_LEADERBOARD_UI);
+                    }
+                });
+    }
+    //- ------------------------
+    public void onClick123(View v) {
+
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+            // ...
+        }
     }
 
+    private void signIn() {
+        Log.d(TAG,"aaaaaaaaaaaaaaaaaaaaa");
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    /*@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }*/
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            mGoogleSignInAccount = completedTask.getResult(ApiException.class);
+            Log.w(TAG, "signInResult:sussed code=" + "12");
+            bestScore.setText("signInResult: sussed");
+
+            // Signed in successfully, show authenticated UI.
+       //     updateUI(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w(TAG, "signInResult:failed code=" + e);
+            bestScore.setText("signInResult: fail. " + e);
+         //   updateUI(null);
+        }
+    }
+    //-- -----------------------
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -186,21 +290,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-    /*@Override
+*/
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d(TAG,"bbbbbbbbbbbbbbbb "+ requestCode);
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == 7) {
+        if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
-    }*/
+    }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+    /*private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             mGoogleSignInAccount = completedTask.getResult(ApiException.class);
             // Signed in successfully, show authenticated UI.
@@ -219,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d(TAG, "signInResult:failed code=" + e.getStatusCode());
 
         }
-    }
+    }*/
 
     public void StopOpenGame(){
         layout.setVisibility(View.VISIBLE);
@@ -290,7 +394,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // go to Game Activity easy game
     public void GoToGameEasy(View view) {
-        try {
+        /*try{
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .addApi(Games.API)
+                    .addScope(Games.SCOPE_GAMES)
+                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                            Log.e(TAG, "Could not connect to Play games services "+connectionResult);
+                            finish();
+                        }
+                    }).build();
+            mGoogleApiClient.connect();
+            Log.e(TAG, "connect: " + mGoogleApiClient.isConnected());}
+        catch (Exception e){Log.e(TAG, "error: " + e);}*/
+        try{
+        showLeaderboard();}
+        catch (Exception e){bestScore.setText(e+"");}
+        /*try {
             a.add("Easy");
             a.add("main");
             go.putExtra("kind",a);
@@ -303,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catch(Exception e){
             new AlertDialog.Builder(this).setMessage(""+e)
                     .setNeutralButton(android.R.string.ok, null).show();;
-        }
+        }*/
     }
 
     // go to Game Activity normal game
@@ -326,7 +448,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // go to Game Activity hard game
     public void GoToGameHard(View view) {
-        try {
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("708959726924-8gn4iafqkekg6c2aivfd7833a2n3qc5p.apps.googleusercontent.com")
+                .requestScopes(Games.SCOPE_GAMES_LITE)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        //startSignInIntent();
+        signIn();
+        /*try {
             a.add("Hard");
             a.add("main");
             go.putExtra("kind",a);
@@ -339,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catch(Exception e){
             new AlertDialog.Builder(this).setMessage(""+e)
                     .setNeutralButton(android.R.string.ok, null).show();
-        }
+        }*/
     }
 
 //-----------------------
@@ -474,6 +604,170 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.w(TAG,"signInResult:failed code= amit connected ");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.w(TAG, "signInResult:failed code= amit " + connectionResult);
+    }
+
 
 // ----------------------
+private void signInSilently() {
+    Log.d(TAG, "signInSilently()");
+    mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
+            new OnCompleteListener<GoogleSignInAccount>() {
+                @Override
+                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInSilently(): success");
+                        onConnected(task.getResult());
+                    } else {
+                        Log.d(TAG, "signInSilently(): failure", task.getException());
+                        onDisconnected();
+                    }
+                }
+            });
+}
+    private void startSignInIntent() {
+        startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
+    }
+    private void signOut() {
+        Log.d(TAG, "signOut()");
+
+        if (!isSignedIn()) {
+            Log.w(TAG, "signOut() called, but was not signed in!");
+            return;
+        }
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        boolean successful = task.isSuccessful();
+                        Log.d(TAG, "signOut(): " + (successful ? "success" : "failed"));
+
+                        onDisconnected();
+                    }
+                });
+    }
+    private boolean isSignedIn() {
+        return GoogleSignIn.getLastSignedInAccount(this) != null;
+    }
+    /*@Override
+    public void onShowLeaderboardsRequested() {
+        mLeaderboardsClient.getAllLeaderboardsIntent()
+                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                    @Override
+                    public void onSuccess(Intent intent) {
+                        startActivityForResult(intent, RC_UNUSED);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        handleException(e, getString(R.string.leaderboards_exception));
+                    }
+                });
+    }
+*/
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task =
+                    GoogleSignIn.getSignedInAccountFromIntent(intent);
+
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                onConnected(account);
+            } catch (ApiException apiException) {
+                String message = apiException.getMessage();
+                if (message == null || message.isEmpty()) {
+                    message = "Erroreeeeeeeee";//getString(R.string.signin_other_error);
+                }
+
+                onDisconnected();
+
+                new AlertDialog.Builder(this)
+                        .setMessage(message)
+                        .setNeutralButton(android.R.string.ok, null)
+                        .show();
+            }
+        }
+    }*/
+    private void onConnected(GoogleSignInAccount googleSignInAccount) {
+        Log.d(TAG, "onConnected(): connected to Google APIs");
+
+        mAchievementsClient = Games.getAchievementsClient(this, googleSignInAccount);
+        mLeaderboardsClient = Games.getLeaderboardsClient(this, googleSignInAccount);
+        /*mEventsClient = Games.getEventsClient(this, googleSignInAccount);
+        mPlayersClient = Games.getPlayersClient(this, googleSignInAccount);
+
+        // Show sign-out button on main menu
+        mMainMenuFragment.setShowSignInButton(false);
+
+        // Show "you are signed in" message on win screen, with no sign in button.
+        mWinFragment.setShowSignInButton(false);
+
+        // Set the greeting appropriately on main menu
+        mPlayersClient.getCurrentPlayer()
+                .addOnCompleteListener(new OnCompleteListener<Player>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Player> task) {
+                        String displayName;
+                        if (task.isSuccessful()) {
+                            displayName = task.getResult().getDisplayName();
+                        } else {
+                            Exception e = task.getException();
+                            handleException(e, getString(R.string.players_exception));
+                            displayName = "???";
+                        }
+                        mMainMenuFragment.setGreeting("Hello, " + displayName);
+                    }
+                });
+
+
+        // if we have accomplishments to push, push them
+        if (!mOutbox.isEmpty()) {
+            pushAccomplishments();
+            Toast.makeText(this, getString(R.string.your_progress_will_be_uploaded),
+                    Toast.LENGTH_LONG).show();
+        }
+
+        loadAndPrintEvents();*/
+    }
+
+    private void onDisconnected() {
+        Log.d(TAG, "onDisconnected()");
+
+        mAchievementsClient = null;
+        mLeaderboardsClient = null;
+        /*mPlayersClient = null;
+
+        // Show sign-in button on main menu
+        mMainMenuFragment.setShowSignInButton(true);
+
+        // Show sign-in button on win screen
+        mWinFragment.setShowSignInButton(true);
+
+        mMainMenuFragment.setGreeting(getString(R.string.signed_out_greeting));*/
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume()");
+
+        // Since the state of the signed in user can change when the activity is not active
+        // it is recommended to try and sign in silently from when the app resumes.
+        //signInSilently();
+    }
 }
